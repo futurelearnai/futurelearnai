@@ -1,0 +1,692 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Future Learn AI — Student Registration</title>
+<style>
+*{margin:0;padding:0;box-sizing:border-box}
+body{font-family:'Segoe UI',Arial,sans-serif;background:#0a0a0f;color:#e0e0e0;min-height:100vh;padding:24px 16px}
+
+.page{max-width:620px;margin:0 auto}
+
+.header{text-align:center;margin-bottom:28px}
+.logo{display:inline-flex;align-items:center;gap:10px;margin-bottom:14px}
+.logo-icon{width:40px;height:40px;background:linear-gradient(135deg,#00d4ff,#7b2ff7);border-radius:10px;display:flex;align-items:center;justify-content:center;font-size:20px}
+.logo-name{font-size:18px;font-weight:700;color:#fff}
+.logo-sub{font-size:10px;color:#00d4ff;letter-spacing:1px;display:block}
+h1{font-size:22px;font-weight:800;color:#fff;margin-bottom:6px}
+.subtitle{font-size:13px;color:#718096}
+
+.card{background:#111120;border:1px solid #ffffff0d;border-radius:14px;padding:28px;margin-bottom:16px}
+.card-title{font-size:14px;font-weight:700;color:#00d4ff;margin-bottom:18px;display:flex;align-items:center;gap:8px}
+.card-title span{background:#00d4ff18;border:1px solid #00d4ff33;width:24px;height:24px;border-radius:6px;display:flex;align-items:center;justify-content:center;font-size:12px}
+
+.field{margin-bottom:16px}
+label{display:block;font-size:12px;color:#a0aec0;margin-bottom:6px;font-weight:600;letter-spacing:.4px;text-transform:uppercase}
+input[type=text],input[type=email],input[type=tel],select,textarea{
+  width:100%;background:#0d0d1a;border:1px solid #ffffff1a;border-radius:8px;
+  padding:11px 14px;color:#fff;font-size:14px;outline:none;
+  transition:border-color .2s;font-family:inherit
+}
+input:focus,select:focus,textarea:focus{border-color:#00d4ff55}
+select option{background:#0d0d1a;color:#fff}
+textarea{resize:vertical;min-height:72px}
+
+.row{display:grid;grid-template-columns:1fr 1fr;gap:12px}
+@media(max-width:480px){.row{grid-template-columns:1fr}}
+
+.type-toggle{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:4px}
+.type-btn{padding:14px;border:1.5px solid #ffffff1a;border-radius:10px;background:transparent;color:#a0aec0;font-size:14px;font-weight:600;cursor:pointer;transition:all .2s;text-align:center}
+.type-btn:hover{border-color:#00d4ff44;color:#e0e0e0}
+.type-btn.active.school{border-color:#00d4ff;background:#00d4ff12;color:#00d4ff}
+.type-btn.active.college{border-color:#a855f7;background:#a855f722;color:#a855f7}
+.type-icon{font-size:24px;display:block;margin-bottom:6px}
+
+.section{display:none}
+.section.show{display:block}
+
+.gender-row{display:grid;grid-template-columns:repeat(3,1fr);gap:8px}
+.radio-btn{padding:9px;border:1px solid #ffffff1a;border-radius:7px;background:transparent;color:#a0aec0;font-size:13px;cursor:pointer;transition:all .2s;text-align:center}
+.radio-btn.active{border-color:#00d4ff;background:#00d4ff12;color:#00d4ff}
+
+.divider{border:none;border-top:1px solid #ffffff08;margin:20px 0}
+
+.submit-btn{
+  width:100%;padding:15px;
+  background:linear-gradient(135deg,#00d4ff,#7b2ff7);
+  color:#fff;border:none;border-radius:10px;
+  font-size:16px;font-weight:700;cursor:pointer;
+  transition:opacity .2s;margin-top:4px
+}
+.submit-btn:hover{opacity:.85}
+.submit-btn:disabled{opacity:.4;cursor:not-allowed}
+
+.required{color:#f56565;margin-left:2px}
+
+.badge{display:inline-block;background:#00d4ff15;border:1px solid #00d4ff33;color:#00d4ff;font-size:11px;padding:2px 10px;border-radius:20px;margin-bottom:16px}
+
+.success{display:none;text-align:center;padding:40px 20px}
+.success-icon{font-size:64px;margin-bottom:16px}
+.success h2{font-size:24px;color:#10b981;margin-bottom:8px}
+.success p{color:#718096;font-size:14px;line-height:1.6;margin-bottom:6px}
+.success .id{font-size:13px;color:#a855f7;margin-top:16px;background:#a855f715;border:1px solid #a855f733;padding:10px 16px;border-radius:8px;display:inline-block}
+
+.progress{display:flex;gap:6px;margin-bottom:24px;align-items:center;justify-content:center}
+.prog-step{width:28px;height:4px;border-radius:2px;background:#ffffff12;transition:background .3s}
+.prog-step.done{background:#00d4ff}
+.prog-step.current{background:#7b2ff7}
+
+.err{font-size:11px;color:#f56565;margin-top:4px;display:none}
+.field.error input,.field.error select,.field.error textarea{border-color:#f5656555}
+.field.error .err{display:block}
+
+.hint{font-size:11px;color:#4a5568;margin-top:4px}
+
+input[type=text]::placeholder,input[type=email]::placeholder,input[type=tel]::placeholder,textarea::placeholder{color:#2d3748}
+</style>
+</head>
+<body>
+<div class="page">
+
+  <div class="header">
+    <div class="logo">
+      <div class="logo-icon">🤖</div>
+      <div>
+        <span class="logo-name">Future Learn AI</span>
+        <span class="logo-sub">BY SYLVASTAR</span>
+      </div>
+    </div>
+    <h1>Student Registration</h1>
+    <p class="subtitle">Register once. Access all 22 lessons for free.</p>
+  </div>
+
+  <div class="progress">
+    <div class="prog-step done" id="p1"></div>
+    <div class="prog-step current" id="p2"></div>
+    <div class="prog-step" id="p3"></div>
+    <div class="prog-step" id="p4"></div>
+  </div>
+
+  <!-- MAIN FORM -->
+  <div id="mainForm">
+
+    <!-- PERSONAL DETAILS -->
+    <div class="card">
+      <div class="card-title"><span>1</span> Personal Details</div>
+
+      <div class="field" id="f-name">
+        <label>Full Name <span class="required">*</span></label>
+        <input type="text" id="name" placeholder="Enter your full name">
+        <div class="err">Please enter your name</div>
+      </div>
+
+      <div class="row">
+        <div class="field" id="f-email">
+          <label>Email Address <span class="required">*</span></label>
+          <input type="email" id="email" placeholder="your@email.com">
+          <div class="err">Enter a valid email</div>
+        </div>
+        <div class="field" id="f-phone">
+          <label>Phone Number <span class="required">*</span></label>
+          <input type="tel" id="phone" placeholder="+91 XXXXX XXXXX" maxlength="13">
+          <div class="err">Enter 10-digit number</div>
+        </div>
+      </div>
+
+      <div class="field">
+        <label>Gender</label>
+        <div class="gender-row">
+          <div class="radio-btn active" onclick="setGender(this,'Male')">Male</div>
+          <div class="radio-btn" onclick="setGender(this,'Female')">Female</div>
+          <div class="radio-btn" onclick="setGender(this,'Other')">Other</div>
+        </div>
+        <input type="hidden" id="gender" value="Male">
+      </div>
+
+      <div class="row">
+        <div class="field" id="f-dob">
+          <label>Date of Birth</label>
+          <input type="text" id="dob" placeholder="DD / MM / YYYY">
+        </div>
+        <div class="field" id="f-state">
+          <label>State <span class="required">*</span></label>
+          <select id="state">
+            <option value="">Select state</option>
+            <option value="Tamil Nadu" selected>Tamil Nadu</option>
+            <option value="Kerala">Kerala</option>
+            <option value="Karnataka">Karnataka</option>
+            <option value="Andhra Pradesh">Andhra Pradesh</option>
+            <option value="Telangana">Telangana</option>
+            <option value="Maharashtra">Maharashtra</option>
+            <option value="Delhi">Delhi</option>
+            <option value="West Bengal">West Bengal</option>
+            <option value="Uttar Pradesh">Uttar Pradesh</option>
+            <option value="Rajasthan">Rajasthan</option>
+            <option value="Gujarat">Gujarat</option>
+            <option value="Punjab">Punjab</option>
+            <option value="Madhya Pradesh">Madhya Pradesh</option>
+            <option value="Bihar">Bihar</option>
+            <option value="Odisha">Odisha</option>
+            <option value="Other">Other</option>
+          </select>
+          <div class="err">Please select your state</div>
+        </div>
+      </div>
+
+      <div class="field" id="f-city">
+        <label>City / District <span class="required">*</span></label>
+        <input type="text" id="city" placeholder="e.g. Tiruchirappalli, Chennai">
+        <div class="err">Please enter your city</div>
+      </div>
+    </div>
+
+    <!-- STUDENT TYPE -->
+    <div class="card">
+      <div class="card-title"><span>2</span> I am a...</div>
+      <div class="type-toggle">
+        <button class="type-btn school" onclick="setType('school')">
+          <span class="type-icon">🏫</span>School Student
+        </button>
+        <button class="type-btn college" onclick="setType('college')">
+          <span class="type-icon">🎓</span>College / University Student
+        </button>
+      </div>
+      <input type="hidden" id="studentType" value="">
+
+      <!-- SCHOOL SECTION -->
+      <div class="section" id="schoolSection">
+        <hr class="divider">
+
+        <div class="field" id="f-sname">
+          <label>School / Institution Name <span class="required">*</span></label>
+          <input type="text" id="schoolName" placeholder="e.g. St. Joseph's Higher Secondary School">
+          <div class="err">Please enter school name</div>
+        </div>
+
+        <div class="field" id="f-sboard">
+          <label>Board of Education <span class="required">*</span></label>
+          <select id="board">
+            <option value="">Select board</option>
+            <option value="Tamil Nadu State Board">Tamil Nadu State Board</option>
+            <option value="CBSE">CBSE</option>
+            <option value="ICSE">ICSE</option>
+            <option value="Matriculation">Matriculation</option>
+            <option value="Anglo Indian">Anglo Indian</option>
+            <option value="Other">Other</option>
+          </select>
+          <div class="err">Please select board</div>
+        </div>
+
+        <div class="row">
+          <div class="field" id="f-sclass">
+            <label>Class / Standard <span class="required">*</span></label>
+            <select id="schoolClass">
+              <option value="">Select class</option>
+              <option value="Class 6">Class 6</option>
+              <option value="Class 7">Class 7</option>
+              <option value="Class 8">Class 8</option>
+              <option value="Class 9">Class 9</option>
+              <option value="Class 10">Class 10 (SSLC)</option>
+              <option value="Class 11">Class 11</option>
+              <option value="Class 12">Class 12 (HSC)</option>
+            </select>
+            <div class="err">Please select your class</div>
+          </div>
+          <div class="field">
+            <label>Section (Optional)</label>
+            <input type="text" id="section" placeholder="e.g. A, B, C">
+          </div>
+        </div>
+
+        <div class="field">
+          <label>School Address <span class="required">*</span></label>
+          <textarea id="schoolAddress" placeholder="Street, Area, City, Pincode"></textarea>
+          <div class="err" id="schoolAddressErr">Please enter school address</div>
+        </div>
+
+        <div class="field">
+          <label>Medium of Instruction</label>
+          <select id="medium">
+            <option value="">Select medium</option>
+            <option value="Tamil Medium">Tamil Medium</option>
+            <option value="English Medium">English Medium</option>
+            <option value="Both">Both</option>
+          </select>
+        </div>
+      </div>
+
+      <!-- COLLEGE SECTION -->
+      <div class="section" id="collegeSection">
+        <hr class="divider">
+
+        <div class="field" id="f-cname">
+          <label>College / University Name <span class="required">*</span></label>
+          <input type="text" id="collegeName" placeholder="e.g. National Institute of Technology, Trichy">
+          <div class="err">Please enter college name</div>
+        </div>
+
+        <div class="field" id="f-course">
+          <label>Course / Degree <span class="required">*</span></label>
+          <select id="course" onchange="updateDept()">
+            <option value="">Select your course</option>
+            <optgroup label="Engineering">
+              <option value="BE">BE — Bachelor of Engineering</option>
+              <option value="BTech">BTech — Bachelor of Technology</option>
+              <option value="ME">ME — Master of Engineering</option>
+              <option value="MTech">MTech — Master of Technology</option>
+            </optgroup>
+            <optgroup label="Science">
+              <option value="BSc">BSc — Bachelor of Science</option>
+              <option value="MSc">MSc — Master of Science</option>
+              <option value="BSc IT">BSc IT — Information Technology</option>
+              <option value="BSc CS">BSc CS — Computer Science</option>
+            </optgroup>
+            <optgroup label="Arts & Commerce">
+              <option value="BA">BA — Bachelor of Arts</option>
+              <option value="MA">MA — Master of Arts</option>
+              <option value="BCom">BCom — Bachelor of Commerce</option>
+              <option value="MCom">MCom — Master of Commerce</option>
+              <option value="BBA">BBA — Bachelor of Business Admin</option>
+              <option value="MBA">MBA — Master of Business Admin</option>
+            </optgroup>
+            <optgroup label="Computer Applications">
+              <option value="BCA">BCA — Bachelor of Computer Applications</option>
+              <option value="MCA">MCA — Master of Computer Applications</option>
+            </optgroup>
+            <optgroup label="Education">
+              <option value="BEd">BEd — Bachelor of Education</option>
+              <option value="MEd">MEd — Master of Education</option>
+              <option value="DEd">DEd — Diploma in Education</option>
+            </optgroup>
+            <optgroup label="Medical & Health">
+              <option value="MBBS">MBBS</option>
+              <option value="BPharm">BPharm — Pharmacy</option>
+              <option value="BSc Nursing">BSc Nursing</option>
+              <option value="BHMS">BHMS — Homeopathy</option>
+            </optgroup>
+            <optgroup label="Law">
+              <option value="LLB">LLB — Bachelor of Law</option>
+              <option value="BL">BL — Bachelor of Laws</option>
+            </optgroup>
+            <optgroup label="Diploma & ITI">
+              <option value="Diploma">Diploma (Polytechnic)</option>
+              <option value="ITI">ITI</option>
+              <option value="NSVTI">NSVTI / Vocational Training</option>
+            </optgroup>
+            <optgroup label="Other">
+              <option value="Other">Other (I will type below)</option>
+            </optgroup>
+          </select>
+          <div class="err">Please select your course</div>
+        </div>
+
+        <div class="field" id="otherCourseField" style="display:none">
+          <label>Specify Your Course</label>
+          <input type="text" id="otherCourse" placeholder="Type your course name">
+        </div>
+
+        <div class="field" id="f-dept">
+          <label>Department / Specialisation <span class="required">*</span></label>
+          <select id="department">
+            <option value="">Select department</option>
+          </select>
+          <div class="err">Please select department</div>
+        </div>
+
+        <div class="row">
+          <div class="field" id="f-year">
+            <label>Year of Study <span class="required">*</span></label>
+            <select id="year">
+              <option value="">Select year</option>
+              <option value="1st Year">1st Year</option>
+              <option value="2nd Year">2nd Year</option>
+              <option value="3rd Year">3rd Year</option>
+              <option value="4th Year">4th Year</option>
+              <option value="5th Year">5th Year</option>
+              <option value="Final Year">Final Year</option>
+              <option value="PG 1st Year">PG 1st Year</option>
+              <option value="PG 2nd Year">PG 2nd Year</option>
+            </select>
+            <div class="err">Please select year</div>
+          </div>
+          <div class="field">
+            <label>Semester (Optional)</label>
+            <select id="semester">
+              <option value="">Select semester</option>
+              <option value="Semester 1">Semester 1</option>
+              <option value="Semester 2">Semester 2</option>
+              <option value="Semester 3">Semester 3</option>
+              <option value="Semester 4">Semester 4</option>
+              <option value="Semester 5">Semester 5</option>
+              <option value="Semester 6">Semester 6</option>
+              <option value="Semester 7">Semester 7</option>
+              <option value="Semester 8">Semester 8</option>
+            </select>
+          </div>
+        </div>
+
+        <div class="field">
+          <label>College Address <span class="required">*</span></label>
+          <textarea id="collegeAddress" placeholder="Street, Area, City, Pincode"></textarea>
+          <div class="err" id="collegeAddressErr">Please enter college address</div>
+        </div>
+
+        <div class="row">
+          <div class="field">
+            <label>Register / Roll Number (Optional)</label>
+            <input type="text" id="rollNo" placeholder="e.g. 22CSE001">
+          </div>
+          <div class="field">
+            <label>Passing Year</label>
+            <select id="passingYear">
+              <option value="">Select year</option>
+              <option value="2025">2025</option>
+              <option value="2026">2026</option>
+              <option value="2027">2027</option>
+              <option value="2028">2028</option>
+              <option value="2029">2029</option>
+              <option value="2030">2030</option>
+            </select>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- COURSE INFO -->
+    <div class="card">
+      <div class="card-title"><span>3</span> Course Details</div>
+      <div class="badge">FREE ENROLLMENT</div>
+
+      <div class="field">
+        <label>Course You Are Enrolling In</label>
+        <input type="text" value="AI for Everyone — Learn AI & Make Money Using AI" readonly style="opacity:.6;cursor:not-allowed">
+      </div>
+
+      <div class="field">
+        <label>How Did You Hear About Us? <span class="required">*</span></label>
+        <select id="source">
+          <option value="">Select option</option>
+          <option value="YouTube">YouTube</option>
+          <option value="Blog (futurelearnai.blogspot.com)">Blog (futurelearnai.blogspot.com)</option>
+          <option value="WhatsApp">WhatsApp</option>
+          <option value="Telegram">Telegram</option>
+          <option value="Friend / Classmate">Friend / Classmate</option>
+          <option value="Teacher">Teacher / Lecturer</option>
+          <option value="Social Media">Social Media</option>
+          <option value="Google Search">Google Search</option>
+          <option value="College Notice Board">College Notice Board</option>
+          <option value="Other">Other</option>
+        </select>
+      </div>
+
+      <div class="field">
+        <label>Why Do You Want to Learn AI?</label>
+        <textarea id="motivation" placeholder="Tell us in a few words why you want to learn AI..."></textarea>
+        <div class="hint">Optional — helps us understand our students better</div>
+      </div>
+
+      <div class="field">
+        <label>Do You Have a Laptop or Smartphone?</label>
+        <select id="device">
+          <option value="Smartphone only">Smartphone only</option>
+          <option value="Laptop only">Laptop only</option>
+          <option value="Both">Both Laptop and Smartphone</option>
+          <option value="Neither">Neither (using school/college computer)</option>
+        </select>
+      </div>
+    </div>
+
+    <!-- PROMPTS OFFER CARD -->
+    <div class="card" style="border:1.5px solid #f59e0b55;background:linear-gradient(135deg,#1a1200,#111120)">
+      <div style="display:flex;align-items:center;gap:10px;margin-bottom:14px">
+        <div style="font-size:28px">⚡</div>
+        <div>
+          <div style="font-size:15px;font-weight:700;color:#f59e0b">Special Offer — Only for New Students!</div>
+          <div style="font-size:12px;color:#718096;margin-top:2px">Add this to your registration today</div>
+        </div>
+        <div style="margin-left:auto;background:#f59e0b;color:#1a1200;font-weight:800;font-size:14px;padding:4px 12px;border-radius:20px;white-space:nowrap">₹249</div>
+      </div>
+
+      <div style="background:#ffffff06;border:1px solid #f59e0b22;border-radius:10px;padding:16px;margin-bottom:14px">
+        <div style="font-size:14px;font-weight:700;color:#fff;margin-bottom:10px">2000 ChatGPT Prompts Pack</div>
+        <div style="display:grid;grid-template-columns:1fr 1fr;gap:8px">
+          <div style="font-size:12px;color:#a0aec0">✅ 2000 ready-to-use prompts</div>
+          <div style="font-size:12px;color:#a0aec0">✅ Earn money from day one</div>
+          <div style="font-size:12px;color:#a0aec0">✅ Freelancing prompts</div>
+          <div style="font-size:12px;color:#a0aec0">✅ Blog writing prompts</div>
+          <div style="font-size:12px;color:#a0aec0">✅ YouTube script prompts</div>
+          <div style="font-size:12px;color:#a0aec0">✅ Business & marketing prompts</div>
+          <div style="font-size:12px;color:#a0aec0">✅ Student study prompts</div>
+          <div style="font-size:12px;color:#a0aec0">✅ PDF delivered instantly</div>
+        </div>
+        <div style="margin-top:12px;padding:10px;background:#f59e0b12;border-radius:7px;border-left:3px solid #f59e0b">
+          <div style="font-size:12px;color:#f59e0b;font-weight:600">Why buy this?</div>
+          <div style="font-size:12px;color:#a0aec0;margin-top:3px;line-height:1.6">Most students don't know what to ask ChatGPT. This pack gives you 2000 proven prompts — just copy, paste, and earn. You can even resell these prompts on Fiverr and get your ₹249 back in one order.</div>
+        </div>
+      </div>
+
+      <div style="margin-bottom:14px">
+        <label style="font-size:12px;color:#a0aec0;font-weight:600;letter-spacing:.4px;text-transform:uppercase;margin-bottom:10px;display:block">Do you want the 2000 ChatGPT Prompts Pack?</label>
+        <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px">
+          <div id="promptYes" onclick="setPrompt('yes')" style="padding:14px;border:1.5px solid #ffffff1a;border-radius:10px;cursor:pointer;text-align:center;transition:all .2s">
+            <div style="font-size:20px;margin-bottom:4px">👍</div>
+            <div style="font-size:13px;font-weight:700;color:#a0aec0">Yes, I want it!</div>
+            <div style="font-size:11px;color:#718096;margin-top:2px">Pay ₹249 after registration</div>
+          </div>
+          <div id="promptNo" onclick="setPrompt('no')" style="padding:14px;border:1.5px solid #ffffff1a;border-radius:10px;cursor:pointer;text-align:center;transition:all .2s">
+            <div style="font-size:20px;margin-bottom:4px">🙅</div>
+            <div style="font-size:13px;font-weight:700;color:#a0aec0">No thanks</div>
+            <div style="font-size:11px;color:#718096;margin-top:2px">Skip for now</div>
+          </div>
+        </div>
+        <input type="hidden" id="promptChoice" value="">
+      </div>
+
+      <div id="promptPayBox" style="display:none;background:#f59e0b12;border:1px solid #f59e0b33;border-radius:8px;padding:12px;text-align:center">
+        <div style="font-size:13px;color:#f59e0b;font-weight:600;margin-bottom:6px">Great choice! You will be redirected to pay ₹249 after registration.</div>
+        <div style="font-size:12px;color:#718096">UPI / Debit Card / Net Banking accepted via Razorpay</div>
+      </div>
+
+      <div id="promptSkipBox" style="display:none;background:#ffffff06;border:1px solid #ffffff0d;border-radius:8px;padding:10px;text-align:center">
+        <div style="font-size:12px;color:#4a5568">No problem! You can always buy it later from our blog.</div>
+      </div>
+    </div>
+
+    <button class="submit-btn" onclick="submitForm()">Register Now — It's Free!</button>
+    <p style="text-align:center;font-size:11px;color:#4a5568;margin-top:12px">
+      By registering you agree to our terms. Your data is safe and will not be shared.
+    </p>
+  </div>
+
+  <!-- SUCCESS -->
+  <div class="success" id="successBox">
+    <div class="success-icon">🎉</div>
+    <h2>Registration Successful!</h2>
+    <p>Welcome to Future Learn AI, <span id="successName" style="color:#00d4ff;font-weight:600"></span>!</p>
+    <p style="margin-top:8px">Check your email for course access details.<br>Start watching Module 1 on YouTube now.</p>
+    <div class="id" id="regId"></div>
+
+    <div id="successPromptYes" style="display:none;margin-top:20px;background:#f59e0b12;border:1.5px solid #f59e0b44;border-radius:12px;padding:20px;text-align:center">
+      <div style="font-size:28px;margin-bottom:8px">⚡</div>
+      <div style="font-size:15px;font-weight:700;color:#f59e0b;margin-bottom:6px">One more step — Get your 2000 Prompts!</div>
+      <div style="font-size:13px;color:#a0aec0;margin-bottom:14px;line-height:1.6">Click below to pay ₹249 via UPI or card.<br>Your PDF will be sent to your email within 24 hours.</div>
+      <a href="https://razorpay.com" target="_blank" style="display:inline-block;background:#f59e0b;color:#1a1200;font-weight:700;font-size:14px;padding:12px 28px;border-radius:8px;text-decoration:none">Pay ₹249 Now →</a>
+      <div style="font-size:11px;color:#718096;margin-top:10px">Secure · UPI / Debit Card / Net Banking via Razorpay</div>
+    </div>
+
+    <div id="successPromptNo" style="display:none;margin-top:16px;background:#ffffff06;border:1px solid #ffffff0d;border-radius:10px;padding:14px;text-align:center">
+      <div style="font-size:13px;color:#718096">Changed your mind? Buy the 2000 ChatGPT Prompts Pack anytime from <a href="https://futurelearnai.blogspot.com" style="color:#00d4ff">futurelearnai.blogspot.com</a></div>
+    </div>
+
+    <p style="margin-top:20px;font-size:12px;color:#4a5568">
+      Questions? Email: futurelearnai@gmail.com
+    </p>
+  </div>
+
+</div>
+
+<script>
+const deptMap = {
+  BE:['Computer Science & Engineering','Electronics & Communication','Mechanical Engineering','Civil Engineering','Electrical & Electronics','Information Technology','Aeronautical Engineering','Chemical Engineering','Biotechnology','Other'],
+  BTech:['Computer Science & Engineering','Electronics & Communication','Mechanical Engineering','Civil Engineering','Electrical & Electronics','Information Technology','Artificial Intelligence & ML','Data Science','Cyber Security','Other'],
+  ME:['Computer Science','VLSI Design','Structural Engineering','Power Electronics','Communication Systems','Other'],
+  MTech:['Computer Science','Data Science','Embedded Systems','Robotics','Manufacturing','Other'],
+  BSc:['Mathematics','Physics','Chemistry','Biology','Botany','Zoology','Statistics','Computer Science','Other'],
+  MSc:['Mathematics','Physics','Chemistry','Computer Science','Data Science','Other'],
+  'BSc IT':['Information Technology'],
+  'BSc CS':['Computer Science'],
+  BA:['English','Tamil','History','Economics','Political Science','Sociology','Psychology','Philosophy','Other'],
+  MA:['English','Tamil','History','Economics','Political Science','Sociology','Other'],
+  BCom:['Commerce','Accounting & Finance','Computer Applications','Corporate Secretaryship','Banking & Insurance','Other'],
+  MCom:['Commerce','Finance','Accounting','Other'],
+  BBA:['General Management','Marketing','Finance','Human Resources','International Business','Other'],
+  MBA:['Marketing','Finance','HR','Operations','Information Technology','Business Analytics','Other'],
+  BCA:['Computer Applications'],
+  MCA:['Computer Applications','Data Science','Software Engineering'],
+  BEd:['Mathematics','Science','Social Science','Tamil','English','Computer Science','Other'],
+  MEd:['Education Technology','Special Education','Other'],
+  DEd:['Primary Education','Elementary Education'],
+  MBBS:['General Medicine'],
+  BPharm:['Pharmaceutical Sciences'],
+  'BSc Nursing':['Nursing'],
+  BHMS:['Homeopathy'],
+  LLB:['Law'],
+  BL:['Law'],
+  Diploma:['Computer Engineering','Electronics','Mechanical','Civil','Electrical','IT','Other'],
+  ITI:['Electrician','Fitter','Turner','Welder','Computer Operator','COPA','Other'],
+  NSVTI:['Computer Hardware & Networking','CHNM','Electrician','Other'],
+  Other:['Other / Not Listed']
+};
+
+function setType(type){
+  document.querySelectorAll('.type-btn').forEach(b=>b.classList.remove('active'));
+  document.querySelector('.type-btn.'+type).classList.add('active');
+  document.getElementById('studentType').value = type;
+  document.getElementById('schoolSection').classList.toggle('show', type==='school');
+  document.getElementById('collegeSection').classList.toggle('show', type==='college');
+  updateProgress();
+}
+
+function setGender(el, val){
+  document.querySelectorAll('.radio-btn').forEach(b=>b.classList.remove('active'));
+  el.classList.add('active');
+  document.getElementById('gender').value = val;
+}
+
+function updateDept(){
+  const course = document.getElementById('course').value;
+  const deptSel = document.getElementById('department');
+  const otherField = document.getElementById('otherCourseField');
+  otherField.style.display = course === 'Other' ? 'block' : 'none';
+  deptSel.innerHTML = '<option value="">Select department</option>';
+  const depts = deptMap[course] || ['Other'];
+  depts.forEach(d=>{
+    const o = document.createElement('option');
+    o.value = d; o.textContent = d;
+    deptSel.appendChild(o);
+  });
+  if(depts.length===1) deptSel.value = depts[0];
+}
+
+function updateProgress(){
+  const steps = ['p1','p2','p3','p4'];
+  const type = document.getElementById('studentType').value;
+  steps.forEach((s,i)=>{
+    const el = document.getElementById(s);
+    if(i===0) el.className='prog-step done';
+    else if(i===1) el.className='prog-step '+(type?'done':'current');
+    else if(i===2) el.className='prog-step '+(type?'current':'');
+    else el.className='prog-step';
+  });
+}
+
+function required(id, errClass){
+  const el = document.getElementById(id);
+  const val = el ? el.value.trim() : '';
+  const f = document.getElementById(errClass||('f-'+id));
+  if(!val){ if(f) f.classList.add('error'); return false; }
+  if(f) f.classList.remove('error'); return true;
+}
+
+function submitForm(){
+  let ok = true;
+  ['name','email','phone','city'].forEach(id=>{ if(!required(id)) ok=false; });
+
+  const st = document.getElementById('state').value;
+  if(!st){ document.getElementById('f-state').classList.add('error'); ok=false; }
+  else document.getElementById('f-state').classList.remove('error');
+
+  const type = document.getElementById('studentType').value;
+  if(!type){ alert('Please select: School Student or College Student'); ok=false; }
+
+  if(type==='school'){
+    ['schoolName','board','schoolClass'].forEach(id=>{
+      if(!required(id)) ok=false;
+    });
+    const addr = document.getElementById('schoolAddress').value.trim();
+    if(!addr){
+      document.getElementById('schoolAddressErr').style.display='block';
+      ok=false;
+    } else document.getElementById('schoolAddressErr').style.display='none';
+  }
+
+  if(type==='college'){
+    ['collegeName','course','department','year'].forEach(id=>{
+      if(!required(id)) ok=false;
+    });
+    const addr = document.getElementById('collegeAddress').value.trim();
+    if(!addr){
+      document.getElementById('collegeAddressErr').style.display='block';
+      ok=false;
+    } else document.getElementById('collegeAddressErr').style.display='none';
+  }
+
+  if(!ok){ window.scrollTo({top:0,behavior:'smooth'}); return; }
+
+  const name = document.getElementById('name').value.trim();
+  const regId = 'FLA-' + Date.now().toString(36).toUpperCase();
+
+  document.getElementById('mainForm').style.display='none';
+  document.getElementById('successBox').style.display='block';
+  document.getElementById('successName').textContent = name;
+  document.getElementById('regId').textContent = 'Registration ID: ' + regId;
+
+  const pc = document.getElementById('promptChoice').value;
+  if(pc==='yes'){
+    document.getElementById('successPromptYes').style.display='block';
+  } else if(pc==='no'){
+    document.getElementById('successPromptNo').style.display='block';
+  }
+  window.scrollTo({top:0,behavior:'smooth'});
+}
+
+function setPrompt(choice){
+  document.getElementById('promptChoice').value = choice;
+  const yes = document.getElementById('promptYes');
+  const no  = document.getElementById('promptNo');
+  if(choice==='yes'){
+    yes.style.border='1.5px solid #f59e0b';
+    yes.style.background='#f59e0b18';
+    yes.querySelector('div:last-child').style.color='#f59e0b';
+    no.style.border='1.5px solid #ffffff1a';
+    no.style.background='transparent';
+    no.querySelector('div:last-child').style.color='#718096';
+    document.getElementById('promptPayBox').style.display='block';
+    document.getElementById('promptSkipBox').style.display='none';
+  } else {
+    no.style.border='1.5px solid #718096';
+    no.style.background='#71809612';
+    no.querySelector('div:last-child').style.color='#718096';
+    yes.style.border='1.5px solid #ffffff1a';
+    yes.style.background='transparent';
+    yes.querySelector('div:last-child').style.color='#718096';
+    document.getElementById('promptPayBox').style.display='none';
+    document.getElementById('promptSkipBox').style.display='block';
+  }
+}
+
+document.getElementById('course') && document.getElementById('course').addEventListener('change', updateDept);
+</script>
+</body>
+</html>

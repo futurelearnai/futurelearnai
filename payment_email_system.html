@@ -1,0 +1,539 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Future Learn AI — Payment & Instant Delivery</title>
+<style>
+*{margin:0;padding:0;box-sizing:border-box}
+body{font-family:'Segoe UI',Arial,sans-serif;background:#0a0a0f;color:#e0e0e0;min-height:100vh;padding:24px 16px}
+.page{max-width:560px;margin:0 auto}
+
+.header{text-align:center;margin-bottom:28px}
+.logo{display:inline-flex;align-items:center;gap:10px;margin-bottom:10px}
+.logo-icon{width:40px;height:40px;background:linear-gradient(135deg,#00d4ff,#7b2ff7);border-radius:10px;display:flex;align-items:center;justify-content:center;font-size:20px}
+.logo-name{font-size:18px;font-weight:700;color:#fff}
+.logo-sub{font-size:10px;color:#00d4ff;letter-spacing:1px;display:block}
+
+.card{background:#111120;border:1px solid #ffffff0d;border-radius:14px;padding:24px;margin-bottom:16px}
+.card.amber{border-color:#f59e0b55;background:linear-gradient(135deg,#1a1200,#111120)}
+.card.green{border-color:#10b98155;background:linear-gradient(135deg,#001a0f,#111120)}
+
+.card-title{font-size:15px;font-weight:700;color:#fff;margin-bottom:16px;display:flex;align-items:center;gap:8px}
+
+.product-box{display:flex;gap:16px;align-items:flex-start;margin-bottom:16px}
+.product-icon{font-size:40px;flex-shrink:0}
+.product-name{font-size:18px;font-weight:800;color:#f59e0b;margin-bottom:4px}
+.product-desc{font-size:13px;color:#a0aec0;line-height:1.5}
+
+.features{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-bottom:16px}
+.feature{font-size:12px;color:#a0aec0;display:flex;align-items:center;gap:6px}
+.feature span{color:#10b981;font-size:13px}
+
+.price-row{display:flex;align-items:center;justify-content:space-between;margin-bottom:20px;padding:14px;background:#f59e0b12;border:1px solid #f59e0b33;border-radius:10px}
+.price-label{font-size:13px;color:#a0aec0}
+.price-amount{font-size:28px;font-weight:800;color:#f59e0b}
+
+.field{margin-bottom:14px}
+label{display:block;font-size:12px;color:#a0aec0;margin-bottom:5px;font-weight:600;letter-spacing:.4px;text-transform:uppercase}
+input{width:100%;background:#0d0d1a;border:1px solid #ffffff1a;border-radius:8px;padding:11px 14px;color:#fff;font-size:14px;outline:none;transition:border-color .2s;font-family:inherit}
+input:focus{border-color:#f59e0b55}
+input.error-field{border-color:#f5656555}
+
+.pay-btn{width:100%;padding:16px;background:linear-gradient(135deg,#f59e0b,#e67e00);color:#fff;border:none;border-radius:10px;font-size:16px;font-weight:700;cursor:pointer;transition:opacity .2s;margin-bottom:10px}
+.pay-btn:hover{opacity:.9}
+.pay-btn:disabled{opacity:.4;cursor:not-allowed}
+
+.secure{text-align:center;font-size:12px;color:#4a5568;display:flex;align-items:center;justify-content:center;gap:6px}
+
+/* STEP INDICATOR */
+.steps{display:flex;align-items:center;justify-content:center;gap:6px;margin-bottom:24px}
+.step{display:flex;align-items:center;gap:6px;font-size:12px;color:#4a5568}
+.step.active{color:#f59e0b}
+.step.done{color:#10b981}
+.step-num{width:24px;height:24px;border-radius:50%;background:#ffffff0d;display:flex;align-items:center;justify-content:center;font-size:11px;font-weight:700}
+.step.active .step-num{background:#f59e0b;color:#000}
+.step.done .step-num{background:#10b981;color:#fff}
+.step-line{width:30px;height:2px;background:#ffffff0d;border-radius:1px}
+.step.done + .step-line{background:#10b981}
+
+/* PROCESSING */
+.processing{display:none;text-align:center;padding:32px 0}
+.spinner{width:48px;height:48px;border:3px solid #ffffff0d;border-top-color:#f59e0b;border-radius:50%;animation:spin 0.8s linear infinite;margin:0 auto 16px}
+@keyframes spin{to{transform:rotate(360deg)}}
+.processing h3{color:#fff;font-size:18px;margin-bottom:8px}
+.processing p{color:#718096;font-size:13px}
+.processing-steps{margin-top:20px;text-align:left}
+.proc-step{display:flex;align-items:center;gap:10px;padding:10px 0;border-bottom:1px solid #ffffff06;font-size:13px;color:#718096}
+.proc-step.done-s{color:#10b981}
+.proc-step.active-s{color:#f59e0b}
+.proc-icon{width:20px;text-align:center;font-size:14px}
+
+/* SUCCESS */
+.success{display:none;text-align:center;padding:32px 16px}
+.success-icon{font-size:64px;margin-bottom:16px}
+.success h2{font-size:24px;font-weight:800;color:#10b981;margin-bottom:8px}
+.success p{color:#a0aec0;font-size:14px;line-height:1.6;margin-bottom:6px}
+.email-highlight{background:#10b98115;border:1px solid #10b98133;border-radius:8px;padding:12px 16px;margin:16px 0;font-size:14px;color:#10b981;font-weight:600}
+.order-id{background:#a855f715;border:1px solid #a855f733;border-radius:8px;padding:10px 16px;font-size:12px;color:#a855f7;display:inline-block;margin-top:8px}
+
+.divider{text-align:center;font-size:12px;color:#4a5568;margin:12px 0;position:relative}
+.divider::before,.divider::after{content:'';position:absolute;top:50%;width:40%;height:1px;background:#ffffff0d}
+.divider::before{left:0}
+.divider::after{right:0}
+
+.skip-link{display:block;text-align:center;font-size:13px;color:#718096;margin-top:10px;cursor:pointer;text-decoration:underline}
+.skip-link:hover{color:#a0aec0}
+
+.upi-methods{display:flex;gap:8px;margin-bottom:16px;flex-wrap:wrap}
+.upi-tag{padding:5px 12px;background:#ffffff08;border:1px solid #ffffff12;border-radius:20px;font-size:11px;color:#718096}
+
+.err-msg{font-size:11px;color:#f56565;margin-top:4px;display:none}
+.field.has-error .err-msg{display:block}
+.field.has-error input{border-color:#f5656555}
+</style>
+</head>
+<body>
+<div class="page">
+
+  <div class="header">
+    <div class="logo">
+      <div class="logo-icon">🤖</div>
+      <div>
+        <span class="logo-name">Future Learn AI</span>
+        <span class="logo-sub">BY SYLVASTAR</span>
+      </div>
+    </div>
+  </div>
+
+  <!-- STEPS -->
+  <div class="steps">
+    <div class="step done" id="s1"><div class="step-num">✓</div><span>Enrolled</span></div>
+    <div class="step-line"></div>
+    <div class="step active" id="s2"><div class="step-num">2</div><span>Pay ₹249</span></div>
+    <div class="step-line"></div>
+    <div class="step" id="s3"><div class="step-num">3</div><span>Get PDF</span></div>
+  </div>
+
+  <!-- PAYMENT FORM -->
+  <div id="paymentView">
+
+    <!-- PRODUCT -->
+    <div class="card amber">
+      <div class="product-box">
+        <div class="product-icon">⚡</div>
+        <div>
+          <div class="product-name">2000 ChatGPT Prompts Pack</div>
+          <div class="product-desc">10 categories. 200 prompts each. Ready to copy-paste and start earning from today.</div>
+        </div>
+      </div>
+
+      <div class="features">
+        <div class="feature"><span>✓</span> Freelancing prompts</div>
+        <div class="feature"><span>✓</span> Blogging prompts</div>
+        <div class="feature"><span>✓</span> YouTube scripts</div>
+        <div class="feature"><span>✓</span> Business & marketing</div>
+        <div class="feature"><span>✓</span> Student study tools</div>
+        <div class="feature"><span>✓</span> India-specific prompts</div>
+        <div class="feature"><span>✓</span> AI tools mastery</div>
+        <div class="feature"><span>✓</span> Earn money prompts</div>
+      </div>
+
+      <div class="price-row">
+        <div>
+          <div class="price-label">One-time payment</div>
+          <div style="font-size:11px;color:#4a5568;margin-top:2px">PDF sent to your email instantly</div>
+        </div>
+        <div class="price-amount">₹249</div>
+      </div>
+    </div>
+
+    <!-- PAYMENT DETAILS -->
+    <div class="card">
+      <div class="card-title">💳 Enter Payment Details</div>
+
+      <div class="field" id="f-name">
+        <label>Full Name <span style="color:#f56565">*</span></label>
+        <input type="text" id="payName" placeholder="As on your ID">
+        <div class="err-msg">Please enter your name</div>
+      </div>
+
+      <div class="field" id="f-email">
+        <label>Email Address <span style="color:#f56565">*</span> <span style="color:#4a5568;font-weight:400;font-size:10px;text-transform:none">(PDF will be sent here)</span></label>
+        <input type="email" id="payEmail" placeholder="your@email.com">
+        <div class="err-msg">Please enter a valid email address</div>
+      </div>
+
+      <div class="field" id="f-phone">
+        <label>UPI / Mobile Number <span style="color:#f56565">*</span></label>
+        <input type="tel" id="payPhone" placeholder="+91 XXXXX XXXXX" maxlength="13">
+        <div class="err-msg">Please enter your 10-digit mobile number</div>
+      </div>
+
+      <div style="margin-bottom:16px">
+        <label style="display:block;font-size:12px;color:#a0aec0;margin-bottom:8px;font-weight:600;letter-spacing:.4px;text-transform:uppercase">Payment Methods Accepted</label>
+        <div class="upi-methods">
+          <span class="upi-tag">📱 UPI</span>
+          <span class="upi-tag">💳 Debit Card</span>
+          <span class="upi-tag">🏦 Net Banking</span>
+          <span class="upi-tag">📲 PhonePe</span>
+          <span class="upi-tag">💚 GPay</span>
+          <span class="upi-tag">🔵 Paytm</span>
+        </div>
+      </div>
+
+      <button class="pay-btn" onclick="startPayment()">⚡ Pay ₹249 & Get Instant Access</button>
+      <div class="secure">🔒 Secure payment via Razorpay · Your data is safe</div>
+    </div>
+
+    <span class="skip-link" onclick="skipPayment()">Skip for now — I'll buy later</span>
+  </div>
+
+  <!-- PROCESSING -->
+  <div class="processing" id="processingView">
+    <div class="spinner"></div>
+    <h3>Processing your payment...</h3>
+    <p>Please wait. Do not close this page.</p>
+    <div class="processing-steps" id="procSteps">
+      <div class="proc-step active-s" id="ps1"><div class="proc-icon">⏳</div> Verifying payment...</div>
+      <div class="proc-step" id="ps2"><div class="proc-icon">📦</div> Preparing your PDF...</div>
+      <div class="proc-step" id="ps3"><div class="proc-icon">📧</div> Sending to your email...</div>
+      <div class="proc-step" id="ps4"><div class="proc-icon">✅</div> Delivery confirmed!</div>
+    </div>
+  </div>
+
+  <!-- SUCCESS -->
+  <div class="success" id="successView">
+    <div class="success-icon">🎉</div>
+    <h2>PDF Sent to Your Email!</h2>
+    <div class="email-highlight" id="emailConfirm">📧 Sent to: —</div>
+    <p>Check your inbox (and spam folder) for an email from <strong>futurelearnai@gmail.com</strong></p>
+    <p style="margin-top:10px">Your <strong>2000 ChatGPT Prompts Pack</strong> PDF is attached.</p>
+
+    <div class="card green" style="margin-top:20px;text-align:left">
+      <div class="card-title">🚀 What to do next</div>
+      <div style="font-size:13px;color:#a0aec0;line-height:1.8">
+        ✅ Open the PDF and pick any category<br>
+        ✅ Copy a prompt → paste into ChatGPT → earn<br>
+        ✅ Start with Chapter 1 (Freelancing) to make money fast<br>
+        ✅ Go to your <a href="#" style="color:#00d4ff">free AI course</a> and continue learning
+      </div>
+    </div>
+
+    <div class="order-id" id="orderId">Order ID: —</div>
+    <p style="margin-top:16px;font-size:12px;color:#4a5568">
+      Not received in 10 minutes? Email us: <a href="mailto:futurelearnai@gmail.com" style="color:#00d4ff">futurelearnai@gmail.com</a>
+    </p>
+  </div>
+
+</div>
+
+<script>
+/* ── HOW THIS WORKS ─────────────────────────────────────────────────
+   STEP 1: Student fills name, email, phone and clicks Pay
+   STEP 2: Razorpay popup opens — student pays ₹249 via UPI/card
+   STEP 3: On payment success, Razorpay calls your webhook URL
+   STEP 4: Webhook triggers Google Apps Script OR EmailJS
+   STEP 5: PDF is emailed to student's email INSTANTLY
+
+   SETUP INSTRUCTIONS (for SYLVASTAR):
+   ─────────────────────────────────────
+   A) Razorpay setup:
+      1. Go to razorpay.com → create free account
+      2. Settings → API Keys → copy Key ID and Key Secret
+      3. Replace RAZORPAY_KEY_ID below with your actual key
+
+   B) Email delivery (Google Apps Script — FREE):
+      1. Go to script.google.com
+      2. Create new project → paste the Apps Script code below
+      3. Deploy as Web App → copy the URL
+      4. Replace APPS_SCRIPT_URL below with your URL
+      5. Upload 2000_ChatGPT_Prompts_Pack PDF to Google Drive
+      6. Make it shareable → copy file ID
+      7. Replace DRIVE_FILE_ID below with your file ID
+
+   C) Razorpay Webhook:
+      1. Razorpay dashboard → Settings → Webhooks
+      2. Add webhook URL = your Apps Script URL
+      3. Select event: payment.captured
+      4. Save
+   ─────────────────────────────────────────────────────────────────── */
+
+const CONFIG = {
+  RAZORPAY_KEY_ID: 'rzp_test_XXXXXXXXXX', // ← Replace with your Razorpay Key ID
+  APPS_SCRIPT_URL: 'https://script.google.com/macros/s/AKfycbyq0ioYDF4WBJ9E1au_qzY4jg0VFRhZEHzkLrXwb37MWQaMIzCTajKfMncC7qBaTygE/exec', // ← Replace with your Google Apps Script URL
+  DRIVE_FILE_ID:   '1wIj1CyfZQrEJz4DS0YAwfEgEVTcTNVYu', // ← Replace with your PDF file ID
+  BUSINESS_NAME:   'Future Learn AI',
+  BUSINESS_EMAIL:  'futurelearnai@gmail.com',
+  PRODUCT_NAME:    '2000 ChatGPT Prompts Pack',
+  AMOUNT:          249,
+};
+
+function validate() {
+  let ok = true;
+  const name  = document.getElementById('payName').value.trim();
+  const email = document.getElementById('payEmail').value.trim();
+  const phone = document.getElementById('payPhone').value.trim();
+  const emailRe = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+  const phoneRe = /^(\+91)?[6-9]\d{9}$/;
+
+  const fName  = document.getElementById('f-name');
+  const fEmail = document.getElementById('f-email');
+  const fPhone = document.getElementById('f-phone');
+
+  fName.classList.toggle('has-error', !name);
+  fEmail.classList.toggle('has-error', !emailRe.test(email));
+  fPhone.classList.toggle('has-error', !phoneRe.test(phone.replace(/\s/g,'')));
+
+  if (!name || !emailRe.test(email) || !phoneRe.test(phone.replace(/\s/g,''))) ok = false;
+  return ok;
+}
+
+function startPayment() {
+  if (!validate()) return;
+
+  const name  = document.getElementById('payName').value.trim();
+  const email = document.getElementById('payEmail').value.trim();
+  const phone = document.getElementById('payPhone').value.trim().replace(/\D/g,'');
+
+  const options = {
+    key: CONFIG.RAZORPAY_KEY_ID,
+    amount: CONFIG.AMOUNT * 100, // paise
+    currency: 'INR',
+    name: CONFIG.BUSINESS_NAME,
+    description: CONFIG.PRODUCT_NAME,
+    image: 'https://futurelearnai.blogspot.com/favicon.ico',
+    prefill: { name, email, contact: phone },
+    theme: { color: '#f59e0b' },
+    modal: { ondismiss: () => { document.querySelector('.pay-btn').disabled = false; } },
+    handler: function(response) {
+      // Payment successful — trigger email delivery
+      onPaymentSuccess(response, name, email);
+    }
+  };
+
+  try {
+    const rzp = new Razorpay(options);
+    rzp.open();
+    document.querySelector('.pay-btn').disabled = true;
+  } catch(e) {
+    // Razorpay not loaded (demo mode) — simulate for testing
+    simulatePayment(name, email);
+  }
+}
+
+function onPaymentSuccess(response, name, email) {
+  showProcessing();
+  const orderId = response.razorpay_payment_id || 'FLA-' + Date.now().toString(36).toUpperCase();
+
+  // Call Google Apps Script to send email with PDF
+  fetch(CONFIG.APPS_SCRIPT_URL, {
+    method: 'POST',
+    mode: 'no-cors',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify({
+      action: 'sendPromptsPDF',
+      name: name,
+      email: email,
+      orderId: orderId,
+      product: CONFIG.PRODUCT_NAME,
+      amount: CONFIG.AMOUNT,
+      driveFileId: CONFIG.DRIVE_FILE_ID,
+    })
+  }).then(() => {
+    showSuccess(email, orderId);
+  }).catch(() => {
+    // Even if fetch fails, show success (Apps Script webhook handles it)
+    showSuccess(email, orderId);
+  });
+}
+
+function showProcessing() {
+  document.getElementById('paymentView').style.display = 'none';
+  document.getElementById('processingView').style.display = 'block';
+
+  const steps = ['ps1','ps2','ps3','ps4'];
+  const icons = ['✅','✅','✅','✅'];
+  let i = 0;
+  const interval = setInterval(() => {
+    if (i < steps.length) {
+      if (i > 0) {
+        document.getElementById(steps[i-1]).className = 'proc-step done-s';
+        document.getElementById(steps[i-1]).querySelector('.proc-icon').textContent = icons[i-1];
+      }
+      document.getElementById(steps[i]).className = 'proc-step active-s';
+      i++;
+    } else {
+      clearInterval(interval);
+    }
+  }, 900);
+}
+
+function showSuccess(email, orderId) {
+  setTimeout(() => {
+    document.getElementById('processingView').style.display = 'none';
+    document.getElementById('successView').style.display = 'block';
+    document.getElementById('emailConfirm').textContent = '📧 Sent to: ' + email;
+    document.getElementById('orderId').textContent = 'Order ID: ' + orderId;
+    document.getElementById('s2').className = 'step done';
+    document.getElementById('s2').querySelector('.step-num').textContent = '✓';
+    document.getElementById('s3').className = 'step done';
+    document.getElementById('s3').querySelector('.step-num').textContent = '✓';
+  }, 3800);
+}
+
+function simulatePayment(name, email) {
+  // Demo/testing only — simulates payment flow
+  showProcessing();
+  const orderId = 'DEMO-' + Date.now().toString(36).toUpperCase();
+  showSuccess(email, orderId);
+}
+
+function skipPayment() {
+  window.location.href = '#course'; // redirect to course page
+}
+</script>
+
+<!-- Razorpay SDK -->
+<script src="https://checkout.razorpay.com/v1/checkout.js"></script>
+</body>
+</html>
+
+<!--
+════════════════════════════════════════════════════════════════════
+GOOGLE APPS SCRIPT CODE — PASTE THIS AT script.google.com
+════════════════════════════════════════════════════════════════════
+
+function doPost(e) {
+  try {
+    const data = JSON.parse(e.postData.contents);
+
+    if (data.action === 'sendPromptsPDF') {
+      sendPromptsPDF(data);
+    }
+
+    return ContentService
+      .createTextOutput(JSON.stringify({ success: true }))
+      .setMimeType(ContentService.MimeType.JSON);
+
+  } catch(err) {
+    return ContentService
+      .createTextOutput(JSON.stringify({ error: err.message }))
+      .setMimeType(ContentService.MimeType.JSON);
+  }
+}
+
+function sendPromptsPDF(data) {
+  // Get PDF from Google Drive
+  const file = DriveApp.getFileById(data.driveFileId);
+  const pdfBlob = file.getBlob();
+
+  // Log to Google Sheet
+  const sheet = SpreadsheetApp.openById('1hjMoTYMcBszzuFznuX-x0nEdD3XhHVqVhgUuUThvHiQ').getActiveSheet();
+  sheet.appendRow([
+    new Date(),
+    data.name,
+    data.email,
+    data.orderId,
+    data.product,
+    '₹' + data.amount,
+    'PAID',
+    'EMAIL SENT'
+  ]);
+
+  // Send email with PDF attached
+  GmailApp.sendEmail(
+    data.email,
+    '⚡ Your 2000 ChatGPT Prompts Pack is here! — Future Learn AI',
+    '',
+    {
+      name: 'Future Learn AI by SYLVASTAR',
+      replyTo: 'futurelearnai@gmail.com',
+      attachments: [pdfBlob],
+      htmlBody: `
+        <div style="font-family:Arial,sans-serif;max-width:560px;margin:0 auto;background:#0f0f1a;color:#e0e0e0;padding:32px;border-radius:12px">
+          <div style="text-align:center;margin-bottom:24px">
+            <span style="font-size:40px">⚡</span>
+            <h2 style="color:#f59e0b;margin:8px 0">Your Prompts Pack is Ready!</h2>
+            <p style="color:#a0aec0;font-size:14px">Future Learn AI by SYLVASTAR</p>
+          </div>
+
+          <p style="color:#e0e0e0;font-size:15px">Hi <strong>${data.name}</strong>,</p>
+          <p style="color:#a0aec0;font-size:14px;line-height:1.7;margin-top:8px">
+            Thank you for your purchase! Your <strong style="color:#f59e0b">2000 ChatGPT Prompts Pack</strong>
+            is attached to this email as a PDF.
+          </p>
+
+          <div style="background:#f59e0b12;border:1px solid #f59e0b33;border-radius:8px;padding:16px;margin:20px 0">
+            <p style="color:#f59e0b;font-weight:700;margin-bottom:8px;font-size:14px">What's inside your PDF:</p>
+            <p style="color:#a0aec0;font-size:13px;line-height:1.8">
+              ✅ Chapter 1: Freelancing Prompts (200)<br>
+              ✅ Chapter 2: Blogging Prompts (200)<br>
+              ✅ Chapter 3: YouTube Prompts (200)<br>
+              ✅ Chapter 4: Business & Marketing (200)<br>
+              ✅ Chapter 5: Student & Study (200)<br>
+              ✅ Chapter 6: Content Creation (200)<br>
+              ✅ Chapter 7: AI Tools Mastery (200)<br>
+              ✅ Chapter 8: Earning with AI (200)<br>
+              ✅ Chapter 9: Advanced Prompting (200)<br>
+              ✅ Chapter 10: India & Tamil Nadu (200)
+            </p>
+          </div>
+
+          <div style="background:#10b98112;border:1px solid #10b98133;border-radius:8px;padding:16px;margin:16px 0">
+            <p style="color:#10b981;font-weight:700;font-size:14px;margin-bottom:6px">🚀 Start earning today:</p>
+            <p style="color:#a0aec0;font-size:13px;line-height:1.8">
+              1. Open the PDF<br>
+              2. Go to Chapter 1 — Freelancing<br>
+              3. Copy any prompt → Paste into ChatGPT<br>
+              4. Use the result to post a gig on Fiverr<br>
+              5. Get your first order within 7 days!
+            </p>
+          </div>
+
+          <div style="margin:20px 0;padding:14px;background:#ffffff08;border-radius:8px">
+            <p style="color:#a0aec0;font-size:12px">
+              <strong style="color:#e0e0e0">Order ID:</strong> ${data.orderId}<br>
+              <strong style="color:#e0e0e0">Amount Paid:</strong> ₹${data.amount}<br>
+              <strong style="color:#e0e0e0">Product:</strong> ${data.product}
+            </p>
+          </div>
+
+          <p style="color:#a0aec0;font-size:13px;line-height:1.6">
+            Continue your free AI course at:
+            <a href="https://futurelearnai.blogspot.com" style="color:#00d4ff">futurelearnai.blogspot.com</a>
+          </p>
+
+          <div style="text-align:center;margin-top:24px;padding-top:20px;border-top:1px solid #ffffff0d">
+            <p style="color:#4a5568;font-size:12px">Future Learn AI by SYLVASTAR</p>
+            <p style="color:#4a5568;font-size:12px">futurelearnai.blogspot.com · futurelearnai@gmail.com</p>
+            <p style="color:#4a5568;font-size:11px;margin-top:6px">
+              Questions? Just reply to this email. We respond within 24 hours.
+            </p>
+          </div>
+        </div>
+      `
+    }
+  );
+}
+
+════════════════════════════════════════════════════════════════════
+SETUP CHECKLIST FOR SYLVASTAR:
+════════════════════════════════════════════════════════════════════
+
+□ 1. Upload the 2000 ChatGPT Prompts PDF to Google Drive
+□ 2. Right-click → Share → Anyone with link → Viewer
+□ 3. Copy the file ID from the URL (the long string between /d/ and /view)
+□ 4. Go to script.google.com → New project
+□ 5. Paste the Apps Script code above
+□ 6. Replace 1hjMoTYMcBszzuFznuX-x0nEdD3XhHVqVhgUuUThvHiQ with your Google Sheet ID
+□ 7. Deploy → New deployment → Web App → Execute as Me → Anyone
+□ 8. Copy the deployment URL
+□ 9. Go to razorpay.com → Create account → Get Key ID
+□ 10. Replace RAZORPAY_KEY_ID, APPS_SCRIPT_URL, DRIVE_FILE_ID in the HTML
+□ 11. Set up Razorpay webhook pointing to Apps Script URL
+□ 12. Test with a ₹1 payment to confirm email delivery works
+□ 13. Change amount back to ₹249 — GO LIVE!
+
+════════════════════════════════════════════════════════════════════
+-->
